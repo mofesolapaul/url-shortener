@@ -20,4 +20,5 @@ cat <<backend | docker exec --interactive urlshortener_php bash
     composer install --prefer-dist --no-dev --optimize-autoloader
     APP_ENV=prod APP_DEBUG=0 php bin/console cache:clear
     ./bin/console --no-interaction doctrine:migrations:migrate
+    screen -S messenger -d -m ./bin/console messenger:consume async -vv
 backend

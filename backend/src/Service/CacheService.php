@@ -10,19 +10,24 @@ class CacheService
 {
     private CacheItemPoolInterface $adapter;
     private ShortUrlRepository $repository;
+    private UrlLogService $logService;
 
     public function __construct(
         CacheItemPoolInterface $adapter,
-        ShortUrlRepository $repository
+        ShortUrlRepository $repository,
+        UrlLogService $logService
     ) {
         $this->adapter = $adapter;
         $this->repository = $repository;
+        $this->logService = $logService;
     }
 
     public function fetch(string $code): ?string
     {
         $cacheItem = $this->adapter->getItem($code);
         if ($cacheItem->isHit()) {
+            $this->logService->queueAccessLog($code);
+
             return $cacheItem->get();
         }
 
@@ -30,6 +35,7 @@ class CacheService
         if ($shortUrl) {
             $cacheItem->set($shortUrl->getFullUrl());
             $this->adapter->save($cacheItem);
+            $this->logService->queueAccessLog($code);
         }
 
         return $shortUrl?->getFullUrl();

@@ -11,7 +11,7 @@ class EditShortUrlData
     private ?string $oldCode;
 
     #[Assert\NotBlank]
-    #[Assert\Length(min: 3)]
+    #[Assert\Length(min: 3, max: 50)]
     #[Assert\Regex(pattern: "/^[A-Za-z0-9\-]+$/", message: "Your new custom code likely contains unsupported characters, use only alphanumerics and hyphens.")]
     private ?string $newCode;
 

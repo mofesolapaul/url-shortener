@@ -23,7 +23,6 @@ class ShortUrl implements \JsonSerializable
 
     /**
      * @ORM\Column(type="string", length=50)
-     * @Assert\NotBlank(groups={"edit"})
      */
     private ?string $code;
 
