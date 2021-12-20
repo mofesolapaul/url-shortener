@@ -6,27 +6,20 @@ namespace App\UseCase;
 use App\Entity\ShortUrl;
 use App\Exception\ApiCallException;
 use App\Model\EditShortUrlData;
-use App\Repository\ShortUrlRepository;
 use App\Service\UrlShortenerService;
 use Doctrine\ORM\EntityManagerInterface;
-use http\Exception\BadMethodCallException;
-use Symfony\Component\Form\Exception\AccessException;
-use Symfony\Component\Validator\Exception\ValidatorException;
 
 class EditShortUrlUseCase
 {
     private UrlShortenerService $urlShortenerService;
     private EntityManagerInterface $manager;
-    private ShortUrlRepository $repository;
 
     public function __construct(
         UrlShortenerService $urlShortenerService,
-        EntityManagerInterface $manager,
-        ShortUrlRepository $repository
+        EntityManagerInterface $manager
     ) {
         $this->urlShortenerService = $urlShortenerService;
         $this->manager = $manager;
-        $this->repository = $repository;
     }
 
     public function execute(EditShortUrlData $data): ?string

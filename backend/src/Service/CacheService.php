@@ -3,34 +3,35 @@ declare(strict_types=1);
 
 namespace App\Service;
 
-use App\Entity\ShortUrl;
+use App\Repository\ShortUrlRepository;
 use Psr\Cache\CacheItemPoolInterface;
 
 class CacheService
 {
     private CacheItemPoolInterface $adapter;
-    private UrlShortenerService $shortenerService;
+    private ShortUrlRepository $repository;
 
     public function __construct(
         CacheItemPoolInterface $adapter,
-        UrlShortenerService $shortenerService
+        ShortUrlRepository $repository
     ) {
         $this->adapter = $adapter;
-        $this->shortenerService = $shortenerService;
+        $this->repository = $repository;
     }
 
-    public function fetch(string $url): ShortUrl
+    public function fetch(string $code): ?string
     {
-        $cacheKey = sha1($url);
-        $cacheItem = $this->adapter->getItem($cacheKey);
+        $cacheItem = $this->adapter->getItem($code);
         if ($cacheItem->isHit()) {
             return $cacheItem->get();
         }
 
-        $shortUrl = $this->shortenerService->shorten($url);
-        $cacheItem->set($shortUrl);
-        $this->adapter->save($cacheItem);
+        $shortUrl = $this->repository->findOneBy(['code' => $code]);
+        if ($shortUrl) {
+            $cacheItem->set($shortUrl->getFullUrl());
+            $this->adapter->save($cacheItem);
+        }
 
-        return $shortUrl;
+        return $shortUrl?->getFullUrl();
     }
 }
