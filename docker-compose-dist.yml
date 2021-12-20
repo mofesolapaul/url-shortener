@@ -1,0 +1,85 @@
+version: '3.3'
+
+services:
+  nginx:
+    build:
+      context: ./docker/nginx
+    container_name: urlshortener_nginx
+    restart: unless-stopped
+    tty: true
+    environment:
+      - NODE_OPTIONS=--openssl-legacy-provider
+    ports:
+      - "8089:80"
+      - "8088:8080"
+    volumes:
+      - ./backend:/var/www/backend
+      - ./frontend:/app
+      - ./docker/nginx/conf.d/:/etc/nginx/conf.d/:cached
+    networks:
+      - app-network
+  
+  php:
+    build:
+      context: ./docker/php
+      args:
+        WITH_XDEBUG: 'false'
+    container_name: urlshortener_php
+    restart: unless-stopped
+    tty: true
+    environment:
+      SERVICE_NAME: app
+      SERVICE_TAGS: dev
+      PHP_IDE_CONFIG: "serverName=url-shortener"
+      XDEBUG_CONFIG: "remote_host=host.docker.internal remote_port=9003"
+    working_dir: /var/www/backend
+    volumes:
+      - ./backend:/var/www/backend
+      - ./docker/php/local.ini:/usr/local/etc/php/conf.d/local.ini:cached
+      - ./docker/php/www.conf:/usr/local/etc/php-fpm.d/www.conf:cached
+    networks:
+      - app-network
+
+  mysql:
+    container_name: urlshortener_mariadb
+    image: bitnami/mariadb:latest
+    ports:
+      - "3301:3306"
+    environment:
+      MARIADB_ROOT_PASSWORD: root
+      MARIADB_DATABASE: main_db
+      MARIADB_USER: user
+      MARIADB_PASSWORD: root
+    restart: on-failure
+    volumes:
+      - dbdata:/var/lib/mysql
+    networks:
+      - app-network
+
+  redis:
+    container_name: urlshortener_redis
+    image: redis:alpine
+    volumes:
+      - redis-data:/data
+    networks:
+      - app-network
+
+  rabbitmq:
+    container_name: urlshortener_rabbit
+    image: rabbitmq:3.9.1-management
+    restart: always
+    volumes:
+      - ./docker/rabbitmq/rabbitmq.conf/:/etc/rabbitmq/rabbitmq.conf/
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    external:
+      name: urlshortener-bridge
+
+volumes:
+  redis-data:
+    driver: local
+  dbdata:
+    driver: local
