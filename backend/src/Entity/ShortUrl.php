@@ -31,6 +31,7 @@ class ShortUrl implements \JsonSerializable
      * @ORM\Column(type="text")
      * @Assert\NotBlank(groups={"create"})
      * @Assert\Url(protocols = {"http", "https", "ftp"}, groups={"create"})
+     * @Assert\Regex(pattern="/.+\..+/", message="Url appears invalid, please double-check.", groups={"create"})
      */
     private ?string $fullUrl;
 

@@ -3,8 +3,9 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Exception\ApiCallException;
 use App\Form\CreateShortUrlType;
-use App\Form\SearchType;
+use App\Service\ErrorService;
 use App\UseCase\CreateShortUrlUseCase;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -33,9 +34,6 @@ class ShortenUrlController extends AbstractController
             return new JsonResponse(compact('shortUrl'));
         }
 
-        return new JsonResponse(
-            ['error' => 'Invalid data'],
-            Response::HTTP_BAD_REQUEST
-        );
+        throw new ApiCallException(ErrorService::getFirstError($form));
     }
 }

@@ -5,3 +5,9 @@ controllers:
 kernel:
     resource: ../src/Kernel.php
     type: annotation
+
+urlRedirects:
+    path: /{code}
+    defaults: {_controller: 'App\Controller\DefaultController'}
+    requirements:
+        code: '[A-Za-z0-9]{7,}'

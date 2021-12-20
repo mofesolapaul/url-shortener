@@ -13,12 +13,11 @@ The entire setup process has been distilled into a single file to make it easy f
 API
 
 - [POST] /shorten
-    - Check for cache entry (return if present)
-    - Check for db record (put it in cache and return if present)
+    - Check for db record (return if present)
     - Generate unique 7-char code
         - Code is case-sensitive
         - Alphanumerics
-    - Save new code (and the URL it represents) in db and cache
+    - Save new code (and the URL it represents) in db
     - Return shortened link
 - [POST] /customize
     - Validate input for uniqueness
@@ -41,6 +40,5 @@ Link resolution:
 - Match url (ex: localhost:8888/{code})
 - Check for code in cache
 - Check for code in db, persist in cache if present
-- ~~Send a 302 response to browser, forwarding to the original url~~
-- No 302, browser cache would prevent features like statistics
-    - Utilize  rabbitmq for async stats updates per requested link
+- Redirect to the original url
+- Utilize  rabbitmq for async stats updates per requested link

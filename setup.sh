@@ -16,4 +16,8 @@ frontend
 printf '\nBUILDING BACKEND APP\n'
 cat <<backend | docker exec --interactive urlshortener_php bash
     composer install
+    composer dump-env prod
+    composer install --prefer-dist --no-dev --optimize-autoloader
+    APP_ENV=prod APP_DEBUG=0 php bin/console cache:clear
+    ./bin/console --no-interaction doctrine:migrations:migrate
 backend
