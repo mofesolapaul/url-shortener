@@ -10,7 +10,8 @@ class EditShortUrlData
     #[Assert\NotBlank]
     private ?string $oldCode;
 
-    #[Assert\NotBlank, Assert\Regex(pattern: "/[A-Za-z0-9\-]+/", message: "Your new custom code likely contains unsupported characters")]
+    #[Assert\NotBlank]
+    #[Assert\Regex(pattern: "/^[A-Za-z0-9\-]+$/", message: "Your new custom code likely contains unsupported characters, use only alphanumerics and hyphens.")]
     private ?string $newCode;
 
     public function getOldCode(): ?string

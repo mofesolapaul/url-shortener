@@ -6,6 +6,9 @@ const Api = {
   shorten: async function (fullUrl) {
     return await axios.post(`${this.apiUrl}/shorten`, { fullUrl });
   },
+  customize: async function (oldCode, newCode) {
+    return await axios.post(`${this.apiUrl}/customize`, { oldCode, newCode });
+  },
 };
 
 axios.interceptors.response.use(

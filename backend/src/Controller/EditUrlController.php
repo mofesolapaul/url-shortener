@@ -31,6 +31,12 @@ class EditUrlController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $shortUrl = $this->useCase->execute($form->getData());
 
+            if (!$shortUrl) {
+                return new JsonResponse([
+                    'error' => 'This custom url is already taken.'
+                ], 400);
+            }
+
             return new JsonResponse(compact('shortUrl'));
         }
 

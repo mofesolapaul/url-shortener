@@ -6,23 +6,30 @@ namespace App\UseCase;
 use App\Entity\ShortUrl;
 use App\Exception\ApiCallException;
 use App\Model\EditShortUrlData;
+use App\Repository\ShortUrlRepository;
 use App\Service\UrlShortenerService;
 use Doctrine\ORM\EntityManagerInterface;
+use http\Exception\BadMethodCallException;
+use Symfony\Component\Form\Exception\AccessException;
+use Symfony\Component\Validator\Exception\ValidatorException;
 
 class EditShortUrlUseCase
 {
     private UrlShortenerService $urlShortenerService;
     private EntityManagerInterface $manager;
+    private ShortUrlRepository $repository;
 
     public function __construct(
         UrlShortenerService $urlShortenerService,
-        EntityManagerInterface $manager
+        EntityManagerInterface $manager,
+        ShortUrlRepository $repository
     ) {
         $this->urlShortenerService = $urlShortenerService;
         $this->manager = $manager;
+        $this->repository = $repository;
     }
 
-    public function execute(EditShortUrlData $data): string
+    public function execute(EditShortUrlData $data): ?string
     {
         $repo = $this->manager->getRepository(ShortUrl::class);
         /** @var ShortUrl $shortUrl */
@@ -34,8 +41,9 @@ class EditShortUrlUseCase
         if ($data->codesIdentical()) {
             return $this->urlShortenerService->generateHref($shortUrl);
         }
-        if ($repo->findOneBy(['code' => $data->getNewCode()])) {
-            throw new ApiCallException('This custom url is already used.');
+        $existingUrl = $repo->findBy(['code' => $data->getNewCode()]);
+        if ($existingUrl) {
+            return null;
         }
 
         $shortUrl->setCode($data->getNewCode());
