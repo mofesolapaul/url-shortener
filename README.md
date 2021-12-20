@@ -32,12 +32,12 @@ Frontend
 - If there’s enough time
     - Show extra option to user
     - [Input] “Customize link”
-    - [Grouped input] localhost:8888/[Input:custom-identifier]
+    - [Grouped input] localhost:8089/[Input:custom-identifier]
     - Make API call and show result
 
 Link resolution:
 
-- Match url (ex: localhost:8888/{code})
+- Match url (ex: localhost:8089/{code})
 - Check for code in cache
 - Check for code in db, persist in cache if present
 - Redirect to the original url
