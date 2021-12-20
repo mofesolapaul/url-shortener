@@ -6,14 +6,19 @@ namespace App\Service;
 use App\Entity\ShortUrl;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ObjectRepository;
+use Symfony\Component\DependencyInjection\ParameterBag\ContainerBagInterface;
 
 class UrlShortenerService
 {
     private EntityManagerInterface $manager;
+    private ContainerBagInterface $containerBag;
 
-    public function __construct(EntityManagerInterface $manager)
-    {
+    public function __construct(
+        EntityManagerInterface $manager,
+        ContainerBagInterface $containerBag
+    ) {
         $this->manager = $manager;
+        $this->containerBag = $containerBag;
     }
 
     private function generateUniqueCode(ObjectRepository $repository): string
@@ -38,5 +43,10 @@ class UrlShortenerService
         $this->manager->flush();
 
         return $shortUrl;
+    }
+
+    public function generateHref(ShortUrl $url): string
+    {
+        return $this->containerBag->get('base.url') . $url->getCode();
     }
 }

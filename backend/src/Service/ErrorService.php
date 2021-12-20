@@ -11,7 +11,11 @@ class ErrorService
     {
         $errors = [];
         foreach ($form->getErrors(true, false) as $error) {
-            $errors[] = $error->current()->getMessage();
+            if (method_exists($error, 'current')) {
+                $errors[] = $error->current()->getMessage();
+            } else {
+                $errors[] = $error->getMessage();
+            }
         }
 
         return $errors;

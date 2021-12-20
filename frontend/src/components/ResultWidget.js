@@ -8,7 +8,7 @@ function ResultWidget({ shortUrl, callback }) {
           </a>
         </div>
         <div className="card-footer">
-            <a className="btn btn-success btn-small">Customize</a>
+            <a className="btn btn-success btn-small">Customize link</a>
             &emsp;
             <a className="btn btn-warning btn-small" onClick={e => callback('')}>Go back</a>
         </div>
