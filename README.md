@@ -32,7 +32,7 @@ Frontend
 - If there’s enough time
     - Show extra option to user
     - [Input] “Customize link”
-    - [Grouped input] [localhost:8888/[Input:custom](http://localhost:8888/[Input:custom)identifier]
+    - [Grouped input] localhost:8888/[Input:custom-identifier]
     - Make API call and show result
 
 Link resolution:
