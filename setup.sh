@@ -10,15 +10,14 @@ cat <<frontend | docker exec --interactive urlshortener_nginx bash
     npm install
     cp .env.dist .env.production.local
     npm run build
-    cp -r /app/build /var/www/html
+    cp -a /app/build/. /var/www/html
 frontend
 
 printf '\nBUILDING BACKEND APP\n'
 cat <<backend | docker exec --interactive urlshortener_php bash
-    composer install
     composer dump-env prod
     composer install --prefer-dist --no-dev --optimize-autoloader
     APP_ENV=prod APP_DEBUG=0 php bin/console cache:clear
     ./bin/console --no-interaction doctrine:migrations:migrate
-    screen -S messenger -d -m ./bin/console messenger:consume async -vv
+    screen -S messenger -d -m ./bin/console messenger:consume async
 backend
