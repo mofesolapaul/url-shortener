@@ -42,3 +42,6 @@ Link resolution:
 - Check for code in db, persist in cache if present
 - Redirect to the original url
 - Utilize  rabbitmq for async stats updates per requested link
+
+## Boilerplate & 3rd party code notice:
+Unless libraries like axios, nelmio, doctrine and symfony packages count, no 3rd party libraries were used.

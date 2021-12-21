@@ -8,6 +8,7 @@ printf '\nBUILDING FRONTEND APP\n'
 cat <<frontend | docker exec --interactive urlshortener_nginx bash
     cd /app
     npm install
+    npm test -- --watchAll=false
     cp .env.dist .env.production.local
     npm run build
     cp -a /app/build/. /var/www/html
