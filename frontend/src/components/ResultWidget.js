@@ -33,6 +33,8 @@ function ResultWidget({ shortUrl, callback }) {
       <div className="card">
         {!customizeMode && (
           <div className="card-body">
+            <small>Click to visit original Url</small>
+            <br />
             <a target="_blank" rel="noreferrer" href={shortUrl}>
               {shortUrl}
             </a>
